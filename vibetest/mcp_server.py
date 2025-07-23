@@ -37,7 +37,7 @@ async def start(url: str, num_agents: int = 3, headless: bool = False) -> str:
         return f"Error starting test: {str(e)}"
 
 @mcp.tool()
-def results(test_id: str) -> dict:
+async def results(test_id: str) -> dict:
     """Get the consolidated bug report for a test run.
     
     Args:
@@ -47,7 +47,7 @@ def results(test_id: str) -> dict:
         dict: Complete test results with detailed findings
     """
     try:
-        summary = summarize_bug_reports(test_id)
+        summary = await summarize_bug_reports(test_id)
         
         if "error" in summary:
             return summary

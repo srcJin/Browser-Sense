@@ -1,6 +1,6 @@
 import asyncio, os, uuid, json, time
-from browser_use import Agent, BrowserSession, BrowserProfile
-from langchain_google_genai import ChatGoogleGenerativeAI
+from browser_use import Agent, BrowserSession, BrowserProfile, ChatGoogle
+from browser_use.llm.messages import UserMessage
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
@@ -24,10 +24,10 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
     
     qa_tasks = await scout_page(base_url)
     
-    llm = ChatGoogleGenerativeAI(
+    llm = ChatGoogle(
         model="gemini-2.0-flash",
         temperature=0.9,
-        google_api_key=GOOGLE_API_KEY
+        api_key=GOOGLE_API_KEY
     )
 
     async def run_single_agent(i: int):
@@ -188,7 +188,7 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
 
 
 # === Standardized summarization with severity classification ===
-def summarize_bug_reports(test_id: str) -> dict:
+async def summarize_bug_reports(test_id: str) -> dict:
     if test_id not in _test_results:
         return {"error": f"Test ID {test_id} not found"}
 
@@ -229,11 +229,9 @@ def summarize_bug_reports(test_id: str) -> dict:
     # llm analysis of findings
     if bug_reports and GOOGLE_API_KEY:
         try:
-            from langchain_google_genai import ChatGoogleGenerativeAI
-            
-            client = ChatGoogleGenerativeAI(
-                model="gemini-1.5-flash",
-                google_api_key=GOOGLE_API_KEY,
+            client = ChatGoogle(
+                model="gemini-2.0-flash",
+                api_key=GOOGLE_API_KEY,
                 temperature=0.1,
             )
 
@@ -280,12 +278,12 @@ Format the output as JSON with the following structure:
 Only include real issues found during testing. Provide clear, concise descriptions. Deduplicate similar issues.
 """
 
-            response = client.invoke(prompt)
+            response = await client.ainvoke([UserMessage(content=prompt)])
             
             # parse json response and calculate severity
             try:
                 import re
-                json_match = re.search(r'\{.*\}', response.content, re.DOTALL)
+                json_match = re.search(r'\{.*\}', response.completion, re.DOTALL)
                 if json_match:
                     severity_analysis = json.loads(json_match.group())
                 else:
@@ -332,7 +330,7 @@ Only include real issues found during testing. Provide clear, concise descriptio
                 "total_issues": total_issues,
                 "severity_breakdown": severity_analysis,
                 "llm_analysis": {
-                    "raw_response": response.content,
+                    "raw_response": response.completion,
                     "model_used": "gemini-1.5-flash"
                 }
             })
@@ -370,10 +368,10 @@ Only include real issues found during testing. Provide clear, concise descriptio
 async def scout_page(base_url: str) -> list:
     """Scout agent that identifies all interactive elements on the page"""
     try:
-        llm = ChatGoogleGenerativeAI(
+        llm = ChatGoogle(
             model="gemini-1.5-flash",
             temperature=0.1,
-            google_api_key=GOOGLE_API_KEY
+            api_key=GOOGLE_API_KEY
         )
         
         browser_profile = BrowserProfile(
@@ -420,11 +418,11 @@ Format as JSON array:
 Make each task very specific about which exact elements to test.
 """
         
-        partition_response = llm.invoke(partition_prompt)
+        partition_response = await llm.ainvoke([UserMessage(content=partition_prompt)])
         
         # parse response
         import re
-        json_match = re.search(r'\[.*\]', partition_response.content, re.DOTALL)
+        json_match = re.search(r'\[.*\]', partition_response.completion, re.DOTALL)
         if json_match:
             element_tasks = json.loads(json_match.group())
         else:
