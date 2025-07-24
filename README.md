@@ -19,6 +19,9 @@ Vibecode and vibetest until your website works.
 uv venv
 source .venv/bin/activate
 uv pip install -e .
+
+# Install the browser
+playwright install chromium --with-deps --no-shell
 ```
 
 ### 1) Claude Code
