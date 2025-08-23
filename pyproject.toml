@@ -1,7 +1,7 @@
 [project]
-name = "vibetest"
+name = "browser-sense"
 version = "0.1.0"
-description = "Browser-agent QA swarm with MCP interface for testing AI-generated websites"
+description = "BrowserSense is a browser agent with real senses — it sees, feels, and understands your app — beyond code perfection, like a real-user"
 requires-python = ">=3.11"
 dependencies = [
   "mcp[cli]>=1.0.0",
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["vibetest*"]
+include = ["browser_sense*"]
 
 [project.scripts]
-vibetest-mcp = "vibetest.mcp_server:run"
+browser-sense-mcp = "browser_sense.mcp_server:run"

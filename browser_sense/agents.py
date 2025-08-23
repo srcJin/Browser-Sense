@@ -1,5 +1,7 @@
 import asyncio, os, uuid, json, time
-from browser_use import Agent, BrowserSession, BrowserProfile, ChatGoogle
+from browser_use import Agent, BrowserSession, BrowserProfile
+from browser_use import ChatGoogle
+from browser_use import ChatAnthropic
 from browser_use.llm.messages import UserMessage
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -29,6 +31,12 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
         temperature=0.9,
         api_key=GOOGLE_API_KEY
     )
+
+    # llm = ChatAnthropic(
+    #     model="claude-sonnet-4-0"
+    #     temperature=1.0,
+    #     api_key=ANTHROPIC_API_KEY
+    # )
 
     async def run_single_agent(i: int):
         task_description = qa_tasks[i % len(qa_tasks)]
