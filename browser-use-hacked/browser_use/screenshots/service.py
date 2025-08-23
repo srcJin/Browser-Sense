@@ -70,8 +70,15 @@ class ScreenshotService:
 	async def store_screenshot(self, screenshot_b64: str, step_number: int, action_description: str = '') -> str:
 		"""Store screenshot to disk and return the full path as string"""
 		if self.organized_storage:
-			# Enhanced naming with action description
-			action_suffix = f"_{action_description.replace(' ', '_')}" if action_description else ''
+			# Enhanced naming with action description - sanitize filename
+			if action_description:
+				# Remove or replace invalid filename characters
+				sanitized_description = action_description.replace('/', '_').replace('\\', '_').replace(':', '_').replace('*', '_').replace('?', '_').replace('"', '_').replace('<', '_').replace('>', '_').replace('|', '_').replace('\n', '_').replace('\r', '_')
+				# Limit length to prevent extremely long filenames
+				sanitized_description = sanitized_description[:100]
+				action_suffix = f"_{sanitized_description.replace(' ', '_')}"
+			else:
+				action_suffix = ''
 			screenshot_filename = f'step_{step_number:03d}{action_suffix}.png'
 		else:
 			# Legacy naming
