@@ -34,7 +34,6 @@ playwright install chromium --with-deps --no-shell
 
 ```bash
 # Add MCP server via CLI
-claude mcp add browsersense /full/path/to/browser-sense/.venv/bin/browser-sense-mcp -e GOOGLE_API_KEY="your_api_key"
 
 
 
