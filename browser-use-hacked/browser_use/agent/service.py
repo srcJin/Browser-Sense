@@ -742,7 +742,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		"""Execute LLM interaction with retry logic and handle callbacks"""
 		input_messages = self._message_manager.get_messages()
 		self.logger.debug(
-			f'🤖 Step {self.state.n_steps}: Calling LLM with {len(input_messages)} messages (model: {self.llm.model})...'
+			f'🤖 Step {self.state.n_steps}: Calling LLM with {len(input_messages)} messages (model: {self.llm.model})... {input_messages}'
 		)
 
 		try:
@@ -1010,7 +1010,21 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			self.logger.debug(
 				f'📸 Storing screenshot for step {self.state.n_steps}, screenshot length: {len(browser_state_summary.screenshot)}'
 			)
-			screenshot_path = await self.screenshot_service.store_screenshot(browser_state_summary.screenshot, self.state.n_steps)
+			# Extract a meaningful string description from the model output
+			action_description = ""
+			if model_output:
+				if model_output.next_goal:
+					action_description = model_output.next_goal
+				elif model_output.memory:
+					action_description = model_output.memory
+				elif model_output.action and len(model_output.action) > 0:
+					# Get the first action's name as description
+					first_action = model_output.action[0]
+					action_data = first_action.model_dump(exclude_unset=True)
+					action_name = next(iter(action_data.keys())) if action_data else 'unknown_action'
+					action_description = action_name
+			
+			screenshot_path = await self.screenshot_service.store_screenshot(browser_state_summary.screenshot, self.state.n_steps, action_description=action_description)
 			self.logger.debug(f'📸 Screenshot stored at: {screenshot_path}')
 		else:
 			self.logger.debug(f'📸 No screenshot in browser_state_summary for step {self.state.n_steps}')

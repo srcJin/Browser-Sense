@@ -3,11 +3,15 @@ from browser_use import Agent, BrowserSession, BrowserProfile
 from browser_use import ChatGoogle
 from browser_use import ChatAnthropic
 from browser_use.llm.messages import UserMessage
+import logging
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+logging.basicConfig(level=logging.DEBUG)
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-if not GOOGLE_API_KEY:
-    raise ValueError("GOOGLE_API_KEY environment variable is required. Set it in your MCP config or environment.")
+# GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+# if not GOOGLE_API_KEY:
+#     raise ValueError("GOOGLE_API_KEY environment variable is required. Set it in your MCP config or environment.")
 
 _test_results = {}
 
@@ -26,17 +30,17 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
     
     qa_tasks = await scout_page(base_url)
     
-    llm = ChatGoogle(
-        model="gemini-2.0-flash",
-        temperature=0.9,
-        api_key=GOOGLE_API_KEY
-    )
-
-    # llm = ChatAnthropic(
-    #     model="claude-sonnet-4-0"
-    #     temperature=1.0,
-    #     api_key=ANTHROPIC_API_KEY
+    # llm = ChatGoogle(
+    #     model="gemini-2.0-flash",
+    #     temperature=0.9,
+    #     api_key=GOOGLE_API_KEY
     # )
+
+    llm = ChatAnthropic(
+        model="claude-sonnet-4-0",
+        temperature=0.9,
+        api_key=ANTHROPIC_API_KEY
+    )
 
     async def run_single_agent(i: int):
         task_description = qa_tasks[i % len(qa_tasks)]
