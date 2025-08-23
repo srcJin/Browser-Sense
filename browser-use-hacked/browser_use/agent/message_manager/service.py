@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from typing import Literal
 
+from browser_use.agent.image_comparison import ImageComparisonService
 from browser_use.agent.message_manager.views import (
 	HistoryItem,
 )
@@ -108,6 +109,7 @@ class MessageManager:
 		vision_detail_level: Literal['auto', 'low', 'high'] = 'auto',
 		include_tool_call_examples: bool = False,
 		include_recent_events: bool = False,
+		sketch_folder_path: str = "sketch",
 	):
 		self.task = task
 		self.state = state
@@ -119,6 +121,9 @@ class MessageManager:
 		self.vision_detail_level = vision_detail_level
 		self.include_tool_call_examples = include_tool_call_examples
 		self.include_recent_events = include_recent_events
+		
+		# Initialize image comparison service
+		self.image_comparison_service = ImageComparisonService(sketch_folder_path)
 
 		assert max_history_items is None or max_history_items > 5, 'max_history_items must be None or greater than 5'
 
@@ -281,6 +286,13 @@ class MessageManager:
 
 		# Create single state message with all content
 		assert browser_state_summary
+		# Get reference images for comparison
+		reference_images = []
+		reference_images_prompt = ""
+		if self.image_comparison_service.has_reference_images():
+			reference_images = self.image_comparison_service.get_reference_images_for_comparison()
+			reference_images_prompt = self.image_comparison_service.get_comparison_prompt_text()
+
 		state_message = AgentMessagePrompt(
 			browser_state_summary=browser_state_summary,
 			file_system=self.file_system,
@@ -295,6 +307,8 @@ class MessageManager:
 			screenshots=screenshots,
 			vision_detail_level=self.vision_detail_level,
 			include_recent_events=self.include_recent_events,
+			reference_images=reference_images,
+			reference_images_prompt=reference_images_prompt,
 		).get_user_message(use_vision)
 
 		# Set the state message with caching enabled

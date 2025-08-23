@@ -188,6 +188,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		step_timeout: int = 120,
 		preload: bool = True,
 		include_recent_events: bool = False,
+		sketch_folder_path: str = "sketch",
 		**kwargs,
 	):
 		if not isinstance(llm, BaseChatModel):
@@ -354,6 +355,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			vision_detail_level=self.settings.vision_detail_level,
 			include_tool_call_examples=self.settings.include_tool_call_examples,
 			include_recent_events=self.include_recent_events,
+			sketch_folder_path=sketch_folder_path,
 		)
 
 		browser_profile = browser_profile or DEFAULT_BROWSER_PROFILE
@@ -1014,15 +1016,15 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			action_description = ""
 			if model_output:
 				if model_output.next_goal:
-					action_description = model_output.next_goal
+					action_description = str(model_output.next_goal)
 				elif model_output.memory:
-					action_description = model_output.memory
+					action_description = str(model_output.memory)
 				elif model_output.action and len(model_output.action) > 0:
 					# Get the first action's name as description
 					first_action = model_output.action[0]
 					action_data = first_action.model_dump(exclude_unset=True)
 					action_name = next(iter(action_data.keys())) if action_data else 'unknown_action'
-					action_description = action_name
+					action_description = str(action_name)
 			
 			screenshot_path = await self.screenshot_service.store_screenshot(browser_state_summary.screenshot, self.state.n_steps, action_description=action_description)
 			self.logger.debug(f'📸 Screenshot stored at: {screenshot_path}')

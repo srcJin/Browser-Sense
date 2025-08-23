@@ -93,6 +93,8 @@ class AgentMessagePrompt:
 		screenshots: list[str] | None = None,
 		vision_detail_level: Literal['auto', 'low', 'high'] = 'auto',
 		include_recent_events: bool = False,
+		reference_images: list[ContentPartImageParam] | None = None,
+		reference_images_prompt: str | None = None,
 	):
 		self.browser_state: 'BrowserStateSummary' = browser_state_summary
 		self.file_system: 'FileSystem | None' = file_system
@@ -108,6 +110,8 @@ class AgentMessagePrompt:
 		self.screenshots = screenshots or []
 		self.vision_detail_level = vision_detail_level
 		self.include_recent_events = include_recent_events
+		self.reference_images = reference_images or []
+		self.reference_images_prompt = reference_images_prompt or ""
 		assert self.browser_state
 
 	@observe_debug(ignore_input=True, ignore_output=True, name='_get_browser_state_description')
@@ -254,9 +258,20 @@ Available tabs:
 			state_description += self.page_filtered_actions + '\n'
 			state_description += '</page_specific_actions>\n'
 
-		if use_vision is True and self.screenshots:
+		# Add reference images prompt if available
+		if self.reference_images_prompt:
+			state_description += '<reference_images_info>\n'
+			state_description += self.reference_images_prompt + '\n'
+			state_description += '</reference_images_info>\n'
+
+		if use_vision is True and (self.screenshots or self.reference_images):
 			# Start with text description
 			content_parts: list[ContentPartTextParam | ContentPartImageParam] = [ContentPartTextParam(text=state_description)]
+
+			# Add reference images first if available
+			if self.reference_images:
+				content_parts.append(ContentPartTextParam(text="Reference images for design comparison:"))
+				content_parts.extend(self.reference_images)
 
 			# Add screenshots with labels
 			for i, screenshot in enumerate(self.screenshots):
