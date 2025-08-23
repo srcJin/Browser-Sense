@@ -68,6 +68,8 @@ claude mcp add vibetest /full/path/to/vibetest-use/.venv/bin/vibetest-mcp -e GOO
 > Run a headless vibetest on localhost:8080 with 10 agents
 ```
 
+Vibetest my website with 2 agents: google.com
+
 ### Parameters You Can Specify
 - **URL**: Any website (`https://example.com`, `localhost:3000`, `http://dev.mysite.com`)
 - **Number of agents**: `3` (default), `5 agents`, `2 agents` - more agents = more thorough testing
