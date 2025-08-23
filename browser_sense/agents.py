@@ -469,12 +469,12 @@ Create a list of specific testing tasks, each focusing on different elements. Ea
 
 Format as JSON array:
 [
-    "Test the [specific element description] - click on [exact button/link text or location]",
-    "Test the [different specific element] - interact with [exact description]",
+    "Visit {base_url} and test the [specific element description] - click on [exact button/link text or location]",
+    "Visit {base_url} and test the [different specific element] - interact with [exact description]",
     ...
 ]
 
-Make each task very specific about which exact elements to test.
+Make each task very specific about which exact elements to test and ALWAYS include the URL {base_url} at the start of each task.
 """
         
         partition_response = await llm.ainvoke([UserMessage(content=partition_prompt)])
