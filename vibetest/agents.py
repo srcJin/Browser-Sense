@@ -118,7 +118,20 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
             )
             
             history = await agent.run()
-            await browser_session.close()
+            
+            # proper browser session cleanup - try multiple cleanup approaches
+            try:
+                # Method 1: Direct browser cleanup
+                if hasattr(browser_session, 'browser') and browser_session.browser:
+                    await browser_session.browser.close()
+                # Method 2: Page cleanup
+                elif hasattr(browser_session, 'page') and browser_session.page:
+                    await browser_session.page.browser.close()
+                # Method 3: Context cleanup
+                elif hasattr(browser_session, '__aexit__'):
+                    await browser_session.__aexit__(None, None, None)
+            except Exception:
+                pass
             
             result_text = str(history.final_result()) if hasattr(history, 'final_result') else str(history)
             
@@ -133,7 +146,15 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
         except Exception as e:
             try:
                 if 'browser_session' in locals():
-                    await browser_session.close()
+                    # Method 1: Direct browser cleanup
+                    if hasattr(browser_session, 'browser') and browser_session.browser:
+                        await browser_session.browser.close()
+                    # Method 2: Page cleanup
+                    elif hasattr(browser_session, 'page') and browser_session.page:
+                        await browser_session.page.browser.close()
+                    # Method 3: Context cleanup
+                    elif hasattr(browser_session, '__aexit__'):
+                        await browser_session.__aexit__(None, None, None)
             except:
                 pass
                 
@@ -395,7 +416,20 @@ async def scout_page(base_url: str) -> list:
         )
         
         history = await agent.run()
-        await browser_session.close()
+        
+        # proper browser session cleanup - try multiple cleanup approaches
+        try:
+            # Method 1: Direct browser cleanup
+            if hasattr(browser_session, 'browser') and browser_session.browser:
+                await browser_session.browser.close()
+            # Method 2: Page cleanup
+            elif hasattr(browser_session, 'page') and browser_session.page:
+                await browser_session.page.browser.close()
+            # Method 3: Context cleanup
+            elif hasattr(browser_session, '__aexit__'):
+                await browser_session.__aexit__(None, None, None)
+        except Exception:
+            pass
         
         scout_result = str(history.final_result()) if hasattr(history, 'final_result') else str(history)
         
