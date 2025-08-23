@@ -5,7 +5,6 @@ description = "BrowserSense is a browser agent with real senses — it sees, fee
 requires-python = ">=3.11"
 dependencies = [
   "mcp[cli]>=1.0.0",
-  "browser-use",
   "playwright",
   "langchain_google_genai",
   "langchain_core",

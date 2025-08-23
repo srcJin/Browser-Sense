@@ -1,0 +1,11 @@
+Metadata-Version: 2.4
+Name: browser-sense
+Version: 0.1.0
+Summary: BrowserSense is a browser agent with real senses — it sees, feels, and understands your app — beyond code perfection, like a real-user
+Requires-Python: >=3.11
+Requires-Dist: mcp[cli]>=1.0.0
+Requires-Dist: playwright
+Requires-Dist: langchain_google_genai
+Requires-Dist: langchain_core
+Requires-Dist: pydantic
+Requires-Dist: screeninfo

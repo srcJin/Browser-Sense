@@ -1,0 +1,2 @@
+[console_scripts]
+browser-sense-mcp = browser_sense.mcp_server:run

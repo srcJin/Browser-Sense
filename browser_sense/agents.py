@@ -41,6 +41,14 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
     async def run_single_agent(i: int):
         task_description = qa_tasks[i % len(qa_tasks)]
         
+        # Create organized storage config for this agent
+        organized_screenshots = {
+            'base_dir': './browser_sense_results',
+            'test_id': test_id,
+            'agent_name': f'agent_{i}',
+            'url': base_url
+        }
+        
         try:
             # browser configuration
             browser_args = ['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
@@ -122,7 +130,8 @@ async def run_pool(base_url: str, num_agents: int = 3, headless: bool = False) -
                 task=task_description,
                 llm=llm,
                 browser_session=browser_session,
-                use_vision=True
+                use_vision=True,
+                organized_screenshots=organized_screenshots
             )
             
             history = await agent.run()
@@ -416,11 +425,20 @@ async def scout_page(base_url: str) -> list:
         
         scout_task = f"""Visit {base_url} and identify ALL interactive elements on the page. Do NOT click anything, just observe and catalog what's available. List buttons, links, forms, input fields, menus, dropdowns, and any other clickable elements you can see. Provide a comprehensive inventory."""
         
+        # Create organized storage config for scout agent
+        scout_screenshots = {
+            'base_dir': './browser_sense_results',
+            'test_id': 'scout_' + str(int(time.time())),
+            'agent_name': 'scout_agent',
+            'url': base_url
+        }
+        
         agent = Agent(
             task=scout_task,
             llm=llm,
             browser_session=browser_session,
-            use_vision=True
+            use_vision=True,
+            organized_screenshots=scout_screenshots
         )
         
         history = await agent.run()

@@ -1,26 +1,32 @@
-# Vibetest Use
+# BrowserSense
 
-Automated QA testing using Browser-Use agents. 
-
+BrowserSense is a QA agent with real senses — it sees, feels, and understands your app — beyond code perfection, like a real-user.
 
 https://github.com/user-attachments/assets/9558d051-78bc-45fd-8694-9ac80eaf9494
 
 
-An MCP server that launches multiple Browser-Use agents to test a vibe-coded website for UI bugs, broken links, accessibility issues, and other technical problems.
+An MCP server that launches multiple Browser-Use agents to test websites for UI bugs, broken links, accessibility issues, and other technical problems.
 
 Perfect for testing both live websites and localhost development sites. 
 
-Vibecode and vibetest until your website works.
+Test with real senses until your website works perfectly.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
+# Setup virtual environment
 uv venv
 source .venv/bin/activate
+
+# Install local browser-use-hacked library first
+cd browser-use-hacked
+uv pip install -e .
+cd ..
+
+# Install BrowserSense dependencies
 uv pip install -e .
 
-# Install the browser
+# Install browser dependencies
 playwright install chromium --with-deps --no-shell
 ```
 
@@ -28,7 +34,9 @@ playwright install chromium --with-deps --no-shell
 
 ```bash
 # Add MCP server via CLI
-claude mcp add vibetest /full/path/to/vibetest-use/.venv/bin/vibetest-mcp -e GOOGLE_API_KEY="your_api_key"
+claude mcp add browsersense /full/path/to/browser-sense/.venv/bin/browser-sense-mcp -e GOOGLE_API_KEY="your_api_key"
+
+
 
 # Test in Claude Code
 > claude
@@ -36,7 +44,7 @@ claude mcp add vibetest /full/path/to/vibetest-use/.venv/bin/vibetest-mcp -e GOO
 > /mcp 
   ⎿  MCP Server Status
 
-     • vibetest: connected
+     • browsersense: connected
 ```
 
 ### 2) Cursor (manually)
@@ -50,8 +58,8 @@ claude mcp add vibetest /full/path/to/vibetest-use/.venv/bin/vibetest-mcp -e GOO
 ```json
 {
   "mcpServers": {
-    "vibetest": {
-      "command": "/full/path/to/vibetest-use/.venv/bin/vibetest-mcp",
+    "browsersense": {
+      "command": "/full/path/to/browser-sense/.venv/bin/browser-sense-mcp",
       "env": {
         "GOOGLE_API_KEY": "your_api_key"
       }
@@ -63,12 +71,12 @@ claude mcp add vibetest /full/path/to/vibetest-use/.venv/bin/vibetest-mcp -e GOO
 
 ### Basic Prompts
 ```
-> Vibetest my website with 5 agents: browser-use.com
-> Run vibetest on localhost:3000
-> Run a headless vibetest on localhost:8080 with 10 agents
+> Test my website with BrowserSense using 5 agents: browser-use.com
+> Run BrowserSense on localhost:3000
+> Run a headless BrowserSense test on localhost:8080 with 10 agents
 ```
 
-Vibetest my website with 2 agents: google.com
+Test my website with BrowserSense using 2 agents: google.com
 
 ### Parameters You Can Specify
 - **URL**: Any website (`https://example.com`, `localhost:3000`, `http://dev.mysite.com`)

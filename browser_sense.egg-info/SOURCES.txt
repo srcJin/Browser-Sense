@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+browser_sense/__init__.py
+browser_sense/agents.py
+browser_sense/mcp_server.py
+browser_sense.egg-info/PKG-INFO
+browser_sense.egg-info/SOURCES.txt
+browser_sense.egg-info/dependency_links.txt
+browser_sense.egg-info/entry_points.txt
+browser_sense.egg-info/requires.txt
+browser_sense.egg-info/top_level.txt
