@@ -23,15 +23,26 @@ const content = {
     rightColumn: "缺月挂疏桐，漏断人初静。谁见幽人独往来？缥缈孤鸿影。惊起却回头，有恨无人省。拣尽寒枝不肯栖，寂寞沙洲冷。",
     leftButton: "多行文字多行文字",
     rightButton: "按钮"
+  },
+  ar: {
+    title: "موقع تجريبي",
+    leftColumn: "هذا النص مكتوب باللغة العربية من اليمين إلى اليسار. يجب أن يظهر التخطيط بشكل صحيح مع النص المحاذي إلى اليمين والتصميم المناسب للغة العربية.",
+    rightColumn: "النص العربي يتطلب معالجة خاصة في التصميم. يجب أن تكون الخطوط واضحة والمسافات مناسبة لقراءة مريحة وجميلة.",
+    leftButton: "نص طويل متعدد الأسطر",
+    rightButton: "زر"
   }
 }
 
 export default function Home() {
-  const [language, setLanguage] = useState<'en' | 'zh'>('en')
+  const [language, setLanguage] = useState<'en' | 'zh' | 'ar'>('en')
   const currentContent = content[language]
 
   const toggleLanguage = () => {
-    setLanguage(prev => prev === 'en' ? 'zh' : 'en')
+    setLanguage(prev => {
+      if (prev === 'en') return 'zh'
+      if (prev === 'zh') return 'ar'
+      return 'en'
+    })
   }
 
   return (
@@ -50,7 +61,7 @@ export default function Home() {
             <h1 className="title">{currentContent.title}</h1>
           </div>
           <button className="language-toggle" onClick={toggleLanguage}>
-            EN/中文
+            EN/中文/العربية
           </button>
         </header>
 

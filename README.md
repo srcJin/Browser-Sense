@@ -2,8 +2,7 @@
 
 BrowserSense is a QA agent with real senses — it sees, feels, and understands your app — beyond code perfection, like a real-user.
 
-https://github.com/user-attachments/assets/9558d051-78bc-45fd-8694-9ac80eaf9494
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JaB9KoJSzS4?si=BBfxiDw72qoMKF__" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 An MCP server that launches multiple Browser-Use agents to test websites for UI bugs, broken links, accessibility issues, and other technical problems.
 
